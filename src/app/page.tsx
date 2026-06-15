@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Link from "next/link";
 
 const MODULES = [
@@ -33,8 +32,7 @@ export default function Home() {
       </div>
 
       <section className="w-full max-w-xl mx-auto px-6 mt-8">
-        <motion.div initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{duration:0.6}}
-          className="text-center mb-16">
+        <div className="text-center mb-16">
           <h1 className="text-3xl md:text-4xl font-bold leading-snug mb-5 serif">
             有些答案，<br/>老祖宗替我们存了两千年。
           </h1>
@@ -42,15 +40,14 @@ export default function Home() {
             不是算命。是借一张命盘，<br/>
             跟那个被生活推着走的自己，好好聊一次天。
           </p>
-        </motion.div>
+        </div>
 
         <div className="space-y-4">
-          {MODULES.map((mod,i)=>(
-            <motion.div key={mod.id} initial={{opacity:0,y:20}} animate={{opacity:1,y:0}}
-              transition={{delay:i*0.10,duration:0.5}}>
+          {MODULES.map((mod)=>(
+            <div key={mod.id}>
               <Link href={`/${mod.id}`}>
                 <div className="bg-white rounded-[2rem] p-7 shadow-sm border border-gray-100
-                  hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
+                  active:scale-[0.98] transition-transform duration-150 cursor-pointer">
                   <div className="flex items-center gap-4 mb-3">
                     <div className="w-11 h-11 rounded-2xl flex items-center justify-center text-xl"
                       style={{background:`linear-gradient(135deg,${mod.color},transparent)`}}>
@@ -64,17 +61,17 @@ export default function Home() {
                   <p className="text-sm text-gray-500 leading-relaxed mb-4">{mod.desc}</p>
                   <div className="flex flex-wrap gap-2 mb-3">
                     {mod.features.map(f=>(
-                      <span key={f} className="text-[11px] rounded-full px-3 py-1.5 border transition-colors group-hover:border-[var(--gold)]/30"
+                      <span key={f} className="text-[11px] rounded-full px-3 py-1.5 border"
                         style={{background:"var(--silk)",borderColor:"var(--border)",color:"var(--ink)"}}>{f}</span>
                     ))}
                   </div>
                   <div className="flex items-center gap-2 text-sm font-medium text-[var(--gold)]">
                     <span>开始解读</span>
-                    <span className="group-hover:translate-x-1 transition-transform">→</span>
+                    <span>→</span>
                   </div>
                 </div>
               </Link>
-            </motion.div>
+            </div>
           ))}
         </div>
 
