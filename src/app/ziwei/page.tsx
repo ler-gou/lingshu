@@ -120,9 +120,20 @@ export default function ZiWeiPage(){
   const fetchAIWithOrder = async (chartData:ChartResult)=>{
     setAiLoading(true);
     try{
-      const resp=await fetch("/api/interpret",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({module:"ziwei",data:{mainStar:chartData.mainStar,palaces:chartData.palaceStars.map(p=>`${p.name}:${p.main}`),auxStars:chartData.palaceStars[0].aux,dayun:chartData.dayun,geju:chartData.gejuList.map(g=>g.name).join("、"),tcmOrgan:chartData.tcm.zang}})});
-      const j=await resp.json();
-      setAi(j.parsed||{summary:j.content||"解读生成中",career:"",relationship:"",health:""});
+      const resp=await fetch("/api/interpret",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({module:"ziwei",stream:true,data:{mainStar:chartData.mainStar,palaces:chartData.palaceStars.map(p=>`${p.name}:${p.main}`),auxStars:chartData.palaceStars[0].aux,dayun:chartData.dayun,geju:chartData.gejuList.map(g=>g.name).join("、"),tcmOrgan:chartData.tcm.zang}})});
+      const ct=resp.headers.get("content-type")||"";
+      if(ct.includes("text/event-stream")){
+        const reader=resp.body?.getReader();if(!reader){setAi({summary:"error",career:"",relationship:"",health:""});setState("paid");setAiLoading(false);return}
+        const dec=new TextDecoder();let buf="";
+        while(true){const{value,done}=await reader.read();if(done)break;
+          buf+=dec.decode(value,{stream:true});const lines=buf.split("\n");buf=lines.pop()||"";
+          for(const line of lines){if(!line.startsWith("data: ")||line.includes("[DONE]"))continue;
+            try{const j=JSON.parse(line.slice(6));if(j.error){setAi({summary:j.error,career:"",relationship:"",health:""})}else{setAi(j)}}catch{}}
+        }
+      }else{
+        const j=await resp.json();
+        setAi(j.parsed||{summary:j.content||"解读生成中",career:"",relationship:"",health:""});
+      }
       setState("paid");
     }catch{setAi({summary:"网络错误",career:"",relationship:"",health:""});setState("paid")}
     setAiLoading(false);

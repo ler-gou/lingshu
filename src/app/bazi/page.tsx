@@ -43,10 +43,20 @@ export default function BaziPage(){
     if(!result)return;
     setAiLoading(true);setAiText("");
     try{
-      const resp=await fetch("/api/interpret",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({module:"bazi",data:result})});
-      const j=await resp.json();
-      if(j.parsed){setAiParsed(j.parsed);setAiText("")}
-      else{setAiText(j.content||j.error||"解读失败");setAiParsed(null)}
+      const resp=await fetch("/api/interpret",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({module:"bazi",data:result,stream:true})});
+      const ct=resp.headers.get("content-type")||"";
+      if(ct.includes("text/event-stream")){
+        const reader=resp.body?.getReader();if(!reader){setAiText("error");setAiLoading(false);return}
+        const dec=new TextDecoder();let buf="";
+        while(true){const{value,done}=await reader.read();if(done)break;
+          buf+=dec.decode(value,{stream:true});
+          const lines=buf.split("\n");buf=lines.pop()||"";
+          for(const line of lines){
+            if(!line.startsWith("data: ")||line.includes("[DONE]"))continue;
+            try{const j=JSON.parse(line.slice(6));if(j.error){setAiText(j.error);setAiParsed(null)}else{setAiParsed(j);setAiText("")}}catch{}
+          }
+        }
+      }else{const j=await resp.json();if(j.parsed){setAiParsed(j.parsed);setAiText("")}else{setAiText(j.content||j.error||"解读失败");setAiParsed(null)}}
       setState("paid");
     }catch{setAiText("网络错误");setAiParsed(null)}
     setAiLoading(false);

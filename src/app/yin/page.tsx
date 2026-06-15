@@ -66,10 +66,10 @@ export default function YinPage(){
       zodiacText,elemText,
     };
     try{
-      const resp=await fetch("/api/interpret",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({module:"yin",data})});
-      const j=await resp.json();
-      if(j.parsed){setAiParsed(j.parsed);setAiText("")}
-      else{setAiText(j.content||j.error||"解读失败");setAiParsed(null)}
+      const resp=await fetch("/api/interpret",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({module:"yin",data,stream:true})});
+      const ct=resp.headers.get("content-type")||"";
+      if(ct.includes("text/event-stream")){const r=resp.body?.getReader();if(!r){setAiText("error");setAiLoading(false);return}const d=new TextDecoder();let b="";while(true){const{value,done}=await r.read();if(done)break;b+=d.decode(value,{stream:true});const ls=b.split("\n");b=ls.pop()||"";for(const l of ls){if(!l.startsWith("data: ")||l.includes("[DONE]"))continue;try{const j=JSON.parse(l.slice(6));if(j.summary){setAiParsed(j);setAiText("")}else{setAiText(j.error||JSON.stringify(j));setAiParsed(null)}}catch{}}}}
+      else{const j=await resp.json();if(j.parsed){setAiParsed(j.parsed);setAiText("")}else{setAiText(j.content||j.error||"解读失败");setAiParsed(null)}}
     }catch{setAiText("网络错误");setAiParsed(null)}
     setAiLoading(false);
   };
