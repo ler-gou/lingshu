@@ -31,6 +31,7 @@ export default function BaziPage(){
   const [city,setCity]=useState("北京");
   const [result,setResult]=useState<Bazi|null>(null);
   const [aiText,setAiText]=useState("");
+  const [aiParsed,setAiParsed]=useState<{summary:string;career?:string;relationship?:string;health?:string}|null>(null);
   const [aiLoading,setAiLoading]=useState(false);
   const [state,setState]=useState<"input"|"preview"|"paid">("input");
 
@@ -45,9 +46,10 @@ export default function BaziPage(){
     try{
       const resp=await fetch("/api/interpret",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({module:"bazi",data:result})});
       const j=await resp.json();
-      setAiText(j.content||j.error||"解读失败");
+      if(j.parsed){setAiParsed(j.parsed);setAiText("")}
+      else{setAiText(j.content||j.error||"解读失败");setAiParsed(null)}
       setState("paid");
-    }catch{setAiText("网络错误");}
+    }catch{setAiText("网络错误");setAiParsed(null)}
     setAiLoading(false);
   };
 
@@ -151,7 +153,7 @@ export default function BaziPage(){
                   <h3 className="text-xl font-bold mb-2 serif">刚才那些话，只是开场。</h3>
                   <p className="text-gray-400 text-sm mb-6">
                     你真正在意的——钱、感情、身体、<br/>未来这几年该往哪走——还在后面。</p>
-                  {!aiLoading&&(
+                  {!aiLoading&&!aiParsed&&(
                     <button onClick={fetchAI}
                       className="w-full bg-[var(--ink)] text-[var(--gold)] rounded-full py-4 font-bold text-base shadow-lg flex items-center justify-center gap-2 hover:bg-black transition-colors">
                       <span>解锁 AI 深度命书</span>
@@ -219,14 +221,21 @@ export default function BaziPage(){
 
             {/* AI report sections */}
             <div className="space-y-6">
-              {aiText?(
+              {(aiParsed||aiText)?(
                 <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
                   <h3 className="text-lg font-bold text-[var(--gold)] mb-6 flex items-center gap-2 serif">
                     <span className="w-1.5 h-1.5 bg-[var(--gold)] rounded-full"/> AI 命书详解
                   </h3>
-                  <div className="text-sm text-gray-700 leading-loose whitespace-pre-line">
-                    {aiText}
-                  </div>
+                  {aiParsed ? (
+                    <div className="text-sm text-gray-700 leading-loose space-y-4">
+                      <div className="whitespace-pre-line">{aiParsed.summary}</div>
+                      {aiParsed.career && <div className="pt-4 border-t border-gray-100"><span className="text-xs font-bold text-gray-500">事业与财富</span><p className="mt-1 whitespace-pre-line">{aiParsed.career}</p></div>}
+                      {aiParsed.relationship && <div className="pt-3"><span className="text-xs font-bold text-gray-500">感情与归宿</span><p className="mt-1 whitespace-pre-line">{aiParsed.relationship}</p></div>}
+                      {aiParsed.health && <div className="pt-3"><span className="text-xs font-bold text-gray-500">健康养真</span><p className="mt-1 whitespace-pre-line">{aiParsed.health}</p></div>}
+                    </div>
+                  ) : (
+                    <div className="text-sm text-gray-700 leading-loose whitespace-pre-line">{aiText}</div>
+                  )}
                 </div>
               ):(
                 <div className="text-center py-8">
@@ -253,7 +262,7 @@ export default function BaziPage(){
                 <button className="bg-white border border-[var(--gold)] text-[var(--gold)] hover:bg-[var(--gold)] hover:text-white transition-colors rounded-full px-6 py-2.5 text-sm font-semibold tracking-wider shadow-sm w-full">
                   生成我的今日留白箴言卡
                 </button>
-                <button onClick={()=>{setState("preview");setAiText("")}}
+                <button onClick={()=>{setState("preview");setAiText("");setAiParsed(null)}}
                   className="text-xs text-gray-300 hover:text-gray-500 transition-colors">
                   重新排盘
                 </button>
