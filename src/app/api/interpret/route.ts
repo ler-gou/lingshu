@@ -23,7 +23,9 @@ const PROMPTS: Record<string, (d: any) => string> = {
 返回JSON（仅JSON，不要markdown）：
 {"summary":"150字高情商判词。从命宫入手说出这个人灵魂的底色——用感受和场景描述他是哪种人。","career":"从财帛宫和官禄宫出发说事业财运——最赚钱的方式、职场里最累的地方、关键年份。不少于150字。","relationship":"从夫妻宫出发说感情缘分——最容易在什么类型的关系里受伤，真正需要的是什么。不少于120字。","health":"从疾厄宫出发结合倪海厦人纪——身体调理宜和忌各两条，具体能立刻做。不少于100字。"}`,
 
-  gua: (d) => `你是易经研究者。本卦${d.gua||""}${d.symbol||""}，含义：${d.desc||""}。${d.changeTo?"变卦"+d.changeTo:""}变爻：${d.changingLines||"无"}。问：${d.question||"未说明"}。返回JSON：{"summary":"解卦判词100字，从卦象说清处境和提醒","career":"","relationship":"","health":""}`,
+  gua: (d) => `你是易经研究者。本卦「${d.gua||""}」，含义：${d.desc||""}。${d.changeTo?"此处产生了变卦——"+d.changeTo+"。":""}变爻：${d.changingLines||"无"}。问：${d.question||"未说明"}。
+
+返回JSON（纯文字，不要任何符号字符）：{"summary":"解卦判词80-120字，从卦象出发说清此人现在的处境和卦给他的提醒","career":"","relationship":"","health":""}`,
 
   yin: (d) => `你是情感咨询师。双方生肖${d.a?.zodiac||""}${d.a?.element||""} vs ${d.b?.zodiac||""}${d.b?.element||""}，生肖匹配${d.zodiacScore||"?"}分，五行匹配${d.elemScore||"?"}分，综合${d.overall||"?"}分。返回JSON：{"summary":"合婚判词120字","career":"","relationship":"从生肖五行分析相处模式、默契和摩擦 150字","health":""}`,
 
@@ -33,6 +35,8 @@ const PROMPTS: Record<string, (d: any) => string> = {
 function cleanJSON(text: string): string {
   let t = text.trim();
   t = t.replace(/^```(?:json)?\s*/i, "").replace(/\s*```\s*$/i, "");
+  // Strip Yi Jing hexagram symbols (U+4DC0–U+4DFF) — not supported in most fonts
+  t = t.replace(/[䷀-䷿]/g, "");
   const m = t.match(/\{[\s\S]*\}/);
   return m ? m[0] : t;
 }
