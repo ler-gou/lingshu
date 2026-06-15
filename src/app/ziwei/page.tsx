@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
 // ─── Types ───
@@ -162,7 +161,7 @@ export default function ZiWeiPage(){
   const PalGrid = ({ result }: { result: ChartResult }) => (
     <div className="grid grid-cols-4 gap-1.5 aspect-square mb-2 max-w-[320px] mx-auto">
       {[[0,0],[0,1],[0,2],[0,3],[1,0],[1,1],[1,2],[1,3],[2,0],[2,1],[2,2],[2,3],[3,0],[3,1],[3,2],[3,3]].map(([r,c],gi)=>{
-        if(r>=1&&r<=2&&c>=1&&c<=2){if(gi!==5)return null;return(<div key="center" className="col-span-2 row-span-2 rounded-2xl flex flex-col items-center justify-center p-3 text-center" style={{background:"rgba(245,240,232,0.5)",border:"1px solid rgba(197,160,89,0.15)",gridColumn:"2/4",gridRow:"2/4"}}><div className="w-8 h-8 rounded-full border border-[var(--gold)] flex items-center justify-center mb-1.5"><span className="serif font-bold text-[#C5A059] text-xs">命</span></div><div className="text-[9px] text-gray-400">Hi, {displayName}</div><div className="text-[11px] font-bold mt-1">{result.mainStar}坐命</div><div className="text-[8px] text-gray-400 mt-0.5">{result.patternName}</div></div>)}
+        if(r>=1&&r<=2&&c>=1&&c<=2){if(gi!==5)return null;return(<div className="col-span-2 row-span-2 rounded-2xl flex flex-col items-center justify-center p-3 text-center" style={{background:"rgba(245,240,232,0.5)",border:"1px solid rgba(197,160,89,0.15)",gridColumn:"2/4",gridRow:"2/4"}}><div className="w-8 h-8 rounded-full border border-[var(--gold)] flex items-center justify-center mb-1.5"><span className="serif font-bold text-[#C5A059] text-xs">命</span></div><div className="text-[9px] text-gray-400">Hi, {displayName}</div><div className="text-[11px] font-bold mt-1">{result.mainStar}坐命</div><div className="text-[8px] text-gray-400 mt-0.5">{result.patternName}</div></div>)}
         const palMap=[11,0,1,2,10,-1,-1,3,9,-1,-1,4,8,7,6,5];const pi=palMap[gi];
         if(pi===undefined||pi===-1)return null;const p=result.palaceStars[pi];
         return(<div key={p.name} onClick={()=>setSelPalace(pi)} className={`rounded-xl p-1.5 cursor-pointer transition-all flex flex-col justify-between relative text-[9px] leading-tight ${selPalace===pi?"ring-2 ring-[var(--gold)] bg-[var(--gold)]/5":"hover:bg-gray-50"} ${p.isMing?"border border-[var(--gold)]/50":""}`} style={{background:selPalace===pi?"rgba(197,160,89,0.06)":""}}><div><div className={`font-bold text-[11px] leading-tight ${p.isMing?"text-[var(--gold)]":"text-[var(--ink)]"}`}>{p.main}</div><div className="text-[8px] text-gray-400 leading-tight">{p.aux[0]} {p.aux[1]}</div></div><div className="flex justify-between items-end mt-1"><span className={`serif text-[10px] ${p.isMing?"text-[var(--gold)] font-bold":"text-gray-500"}`}>{p.name}</span><span className="text-[8px] text-gray-300">{p.branch}</span></div>{p.isShen&&<div className="absolute top-0.5 left-0.5 bg-[var(--gold)] text-white text-[7px] px-1 rounded font-bold">身</div>}</div>);
@@ -172,9 +171,9 @@ export default function ZiWeiPage(){
 
   return(<main className="min-h-screen pb-20 selection:bg-[var(--gold)] selection:text-white">
     <div className="w-full max-w-3xl mx-auto px-6 pt-8 pb-4"><Link href="/" className="text-sm text-gray-400 hover:text-gray-600">← 灵枢</Link></div>
-    <AnimatePresence mode="wait">
+    {/* AnimatePresence */}
       {/* INPUT */}
-      {state==="input"&&(<motion.section key="input" initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} exit={{opacity:0}} className="w-full max-w-xl mx-auto px-6 mt-4 text-center">
+      {state==="input"&&(<section className="w-full max-w-xl mx-auto px-6 mt-4 text-center">
         <div className="w-24 h-24 mx-auto mb-6 relative"><div className="absolute inset-0 rounded-full border border-[var(--gold)]/30 animate-spin-slow"/><div className="absolute inset-3 rounded-full border border-[var(--gold)]/20 animate-spin-slow" style={{animationDuration:"34s",animationDirection:"reverse"}}/><div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-[var(--gold)] shadow-[0_0_18px_var(--gold)]"/></div>
         <h1 className="text-3xl font-bold leading-snug mb-4 serif">紫微<span className="text-[var(--gold)]">·</span>命理</h1>
         <p className="text-gray-400 mb-10 text-sm">排八字 · 演星盘 · 观格局</p>
@@ -187,13 +186,13 @@ export default function ZiWeiPage(){
             <button onClick={handleCalc} className="w-full bg-[var(--ink)] hover:bg-black text-white rounded-full py-4 mt-2 font-semibold tracking-wider shadow-lg">排布先天格局</button>
           </div>
         </div>
-      </motion.section>)}
+      </section>)}
 
       {/* LOADING */}
-      {state==="loading"&&(<motion.section key="loading" initial={{opacity:0}} animate={{opacity:1}} className="w-full max-w-xl mx-auto px-6 mt-20 text-center"><div className="animate-spin rounded-full h-12 w-12 border-2 border-t-transparent mx-auto mb-6" style={{borderColor:"var(--gold)",borderTopColor:"transparent"}}/><h2 className="text-xl font-bold mb-2 serif">正在排布天纪星盘…</h2></motion.section>)}
+      {state==="loading"&&(<section className="w-full max-w-xl mx-auto px-6 mt-20 text-center"><div className="animate-spin rounded-full h-12 w-12 border-2 border-t-transparent mx-auto mb-6" style={{borderColor:"var(--gold)",borderTopColor:"transparent"}}/><h2 className="text-xl font-bold mb-2 serif">正在排布天纪星盘…</h2></section>)}
 
       {/* PREVIEW */}
-      {state==="preview"&&result&&(<motion.section key="preview" initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} className="w-full max-w-xl mx-auto px-4">
+      {state==="preview"&&result&&(<section className="w-full max-w-xl mx-auto px-4">
         {/* Pillars */}
         <div className="mb-5"><div className="flex items-center gap-2 mb-3"><span className="w-1 h-4 bg-[var(--gold)] rounded-sm"/><h2 className="text-sm font-semibold text-gray-500 tracking-wider">四柱八字</h2></div><div className="grid grid-cols-4 gap-2">{result.pillars.map((p,i)=>(<div key={p.label} className={`bg-white rounded-2xl p-4 text-center shadow-sm border ${i===2?"border-[var(--gold)] shadow-[0_0_16px_rgba(197,160,89,0.15)]":"border-gray-100"}`}><div className="text-[10px] text-gray-400 mb-2 tracking-wider">{p.label}{i===2&&" · 日主"}</div><div className="text-2xl font-bold serif mb-1" style={{color:(WUXING_MAP as any)[p.gan]?({木:"#6fe3a8",火:"#ff897a",土:"#e8c079",金:"#d3d6ea",水:"#6fb8ff"} as any)[(WUXING_MAP as any)[p.gan]]:"var(--ink)"}}>{p.gan}{p.zhi}</div><div className="text-[10px] text-gray-300">{p.nayin}</div>{i===2&&<div className="mt-2 inline-block bg-[var(--gold)] text-white text-[9px] rounded-full px-2 py-0.5 font-bold">日主</div>}</div>))}</div></div>
         {/* Wuxing */}
@@ -208,10 +207,10 @@ export default function ZiWeiPage(){
         <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 mb-5"><div className="flex items-center gap-2 mb-3"><span className="w-1 h-4 bg-[var(--gold)] rounded-sm"/><h2 className="text-sm font-semibold text-gray-500 tracking-wider">中医养生</h2></div><p className="text-xs text-gray-500 mb-3">{result.tcm.desc}</p><div className="grid grid-cols-2 gap-3"><div className="bg-[var(--pine-bg)] rounded-xl p-3"><span className="inline-block bg-[var(--pine)] text-white text-[9px] px-2 py-0.5 rounded mb-2">宜</span><ul className="text-[11px] leading-relaxed text-gray-700 space-y-0.5">{result.tcm.dos.map((d,i)=><li key={i}>· {d}</li>)}</ul></div><div className="bg-[var(--rose-bg)] rounded-xl p-3"><span className="inline-block bg-[var(--rose)] text-white text-[9px] px-2 py-0.5 rounded mb-2">忌</span><ul className="text-[11px] leading-relaxed text-gray-700 space-y-0.5">{result.tcm.donts.map((d,i)=><li key={i}>· {d}</li>)}</ul></div></div></div>
         {/* Paywall */}
         <div className="relative pb-10"><div className="blur-[2px] opacity-40 pointer-events-none select-none space-y-3"><div className="bg-white p-5 rounded-2xl border border-gray-100"><h4 className="text-sm font-bold text-[var(--gold)] mb-2">事业与财富 · 破局之钥</h4><p className="text-xs text-gray-500">你真正适合的方向是什么？哪一年是转折点？</p></div><div className="bg-white p-5 rounded-2xl border border-gray-100"><h4 className="text-sm font-bold text-[var(--gold)] mb-2">感情与归宿 · 聆听委屈</h4><p className="text-xs text-gray-500">你需要的是一个什么样的伴侣——不是条件，是感觉。</p></div></div><div className="absolute inset-0 flex items-center justify-center"><div className="bg-white/90 backdrop-blur-xl p-6 rounded-3xl shadow-xl border border-white w-full max-w-xs text-center"><h3 className="text-lg font-bold mb-2 serif">上面只是轮廓。<br/>故事的后半段，在盘里。</h3><ul className="text-xs text-gray-600 space-y-1.5 mb-5 mx-auto w-fit text-left"><li>💰 财富卡点与爆发年</li><li>💕 正缘画像与相遇时机</li><li>📈 未来十年大限策略</li><li>🌿 专属中医体质调理方案</li></ul>{!orderId&&(<button onClick={createOrder} className="w-full bg-[var(--ink)] text-[var(--gold)] rounded-full py-3 font-bold text-sm shadow-lg hover:bg-black">解锁 AI 深度命书 · ￥19.9</button>)}{orderId&&(<div className="py-3 text-center"><div className="animate-spin rounded-full h-6 w-6 border-2 border-t-transparent mx-auto mb-2" style={{borderColor:"var(--gold)",borderTopColor:"transparent"}}/><p className="text-xs text-gray-400">等待支付确认…</p></div>)}<p className="text-[10px] text-gray-300 mt-3">已有 3,428 位行路人在此找到心安</p></div></div></div>
-      </motion.section>)}
+      </section>)}
 
       {/* PAID */}
-      {state==="paid"&&result&&ai&&(<motion.section key="paid" initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} className="w-full max-w-xl mx-auto px-4">
+      {state==="paid"&&result&&ai&&(<section className="w-full max-w-xl mx-auto px-4">
         <div className="text-center mb-6"><div className="inline-block bg-[var(--gold)] text-white px-4 py-1 rounded-full text-xs tracking-wider mb-3">已解锁 · 深度命理档案</div><h2 className="text-2xl font-bold mb-1 serif">Hi, {displayName}</h2></div>
         {/* Summary — with graceful fallback */}
         {ai.summary ? (
@@ -235,8 +234,8 @@ export default function ZiWeiPage(){
             {genning?"正在生成箴言卡…":"生成我的今日留白箴言卡"}
           </button>
           <button onClick={()=>{setState("preview");setAi(null);setOrderId("")}} className="text-xs text-gray-300 hover:text-gray-500">重新排盘</button></div>
-      </motion.section>)}
-    </AnimatePresence>
+      </section>)}
+    {/* /AnimatePresence */}
 
     {/* ── Hidden poster template (for html2canvas generation) ── */}
     <div ref={posterRef} className="fixed left-[-9999px] top-[-9999px] w-[375px] h-[667px] flex flex-col items-center justify-between py-12 px-8 z-[-1]"

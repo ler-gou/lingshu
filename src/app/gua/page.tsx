@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
 // ── 64卦 ──
@@ -158,9 +157,9 @@ export default function GuaPage(){
           </button>
         </div>
 
-        <AnimatePresence>
+        {/* AnimatePresence */}
           {showResult&&lines&&(
-            <motion.div initial={{opacity:0,y:12}} animate={{opacity:1,y:0}}>
+            <div>
 
               {/* Hexagram display */}
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-5">
@@ -233,7 +232,7 @@ export default function GuaPage(){
 
               {/* AI Result — parsed JSON or raw fallback */}
               {(aiParsed||aiText)&&(
-                <motion.div initial={{opacity:0,y:8}} animate={{opacity:1,y:0}}
+                <div
                   className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-5">
                   <h3 className="text-sm font-bold text-[var(--gold)] mb-3 serif flex items-center gap-2">
                     <span className="w-1.5 h-4 bg-[var(--gold)] rounded-sm"/> AI 解卦
@@ -248,7 +247,7 @@ export default function GuaPage(){
                   ) : (
                     <div className="text-sm text-gray-700 leading-loose whitespace-pre-line">{aiText}</div>
                   )}
-                </motion.div>
+                </div>
               )}
 
               {/* Recast */}
@@ -257,9 +256,9 @@ export default function GuaPage(){
                   className="text-xs text-gray-300 hover:text-gray-500">重新起卦</button>
               </div>
 
-            </motion.div>
+            </div>
           )}
-        </AnimatePresence>
+        {/* /AnimatePresence */}
       </section>
     </main>
   );

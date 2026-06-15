@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
 const STEMS = ["甲","乙","丙","丁","戊","己","庚","辛","壬","癸"];
@@ -61,9 +60,9 @@ export default function BaziPage(){
       </div>
 
       {/* STATE 1: Input */}
-      <AnimatePresence mode="wait">
+      {/* AnimatePresence */}
         {state==="input"&&(
-          <motion.section key="input" initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} exit={{opacity:0}}
+          <section
             className="w-full max-w-xl mx-auto px-6 mt-4 text-center">
             <h1 className="text-3xl md:text-4xl font-bold leading-snug mb-4 serif">
               揭开你命盘里的<br/>第一层密码。
@@ -93,12 +92,12 @@ export default function BaziPage(){
                 开启我的命运密钥
               </button>
             </div>
-          </motion.section>
+          </section>
         )}
 
         {/* STATE 2: Preview (blurred content + paywall) */}
         {state==="preview"&&result&&(
-          <motion.section key="preview" initial={{opacity:0}} animate={{opacity:1}}
+          <section
             className="w-full max-w-xl mx-auto px-6 mt-4">
             {/* Free preview — readable */}
             <div className="text-center mb-8">
@@ -147,8 +146,7 @@ export default function BaziPage(){
 
               {/* Paywall overlay */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <motion.div
-                  initial={{scale:0.95}} animate={{scale:1}} transition={{delay:0.3}}
+                <div
                   className="bg-white/90 backdrop-blur-xl p-8 rounded-3xl shadow-xl border border-white max-w-sm w-full text-center">
                   <h3 className="text-xl font-bold mb-2 serif">刚才那些话，只是开场。</h3>
                   <p className="text-gray-400 text-sm mb-6">
@@ -167,15 +165,15 @@ export default function BaziPage(){
                     </div>
                   )}
                   <p className="text-xs text-gray-300 mt-4">已有 1,286 位行路人在此找到心安</p>
-                </motion.div>
+                </div>
               </div>
             </div>
-          </motion.section>
+          </section>
         )}
 
         {/* STATE 3: Full Paid Report */}
         {state==="paid"&&result&&(
-          <motion.section key="paid" initial={{opacity:0,y:12}} animate={{opacity:1,y:0}}
+          <section
             className="w-full max-w-xl mx-auto px-6 mt-4">
             <div className="text-center mb-8">
               <div className="inline-block bg-[var(--gold)] text-white px-4 py-1 rounded-full text-xs tracking-wider mb-5">
@@ -268,9 +266,9 @@ export default function BaziPage(){
                 </button>
               </div>
             </div>
-          </motion.section>
+          </section>
         )}
-      </AnimatePresence>
+      {/* /AnimatePresence */}
     </main>
   );
 }
