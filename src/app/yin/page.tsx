@@ -98,8 +98,8 @@ export default function YinPage(){
         <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 mb-4">
           <div className="flex items-center gap-2 mb-3">
             <span className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white"
-              style={{background:"#a66a6a"}}>一</span>
-            <span className="text-xs text-gray-500">第一人</span>
+              style={{background:"#5a7d92"}}>男</span>
+            <span className="text-xs text-gray-500">男生</span>
           </div>
           <div className="grid grid-cols-2 gap-3">
             {[{l:"出生年",v:aYear,s:setAYear},{l:"月",v:aMonth,s:setAMonth},{l:"日",v:aDay,s:setADay},{l:"时",v:aHour,s:setAHour}].map(f=>field(f.l,f.v,f.s))}
@@ -110,8 +110,8 @@ export default function YinPage(){
         <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 mb-5">
           <div className="flex items-center gap-2 mb-3">
             <span className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white"
-              style={{background:"#a66a6a"}}>二</span>
-            <span className="text-xs text-gray-500">第二人</span>
+              style={{background:"#a66a6a"}}>女</span>
+            <span className="text-xs text-gray-500">女生</span>
           </div>
           <div className="grid grid-cols-2 gap-3">
             {[{l:"出生年",v:bYear,s:setBYear},{l:"月",v:bMonth,s:setBMonth},{l:"日",v:bDay,s:setBDay},{l:"时",v:bHour,s:setBHour}].map(f=>field(f.l,f.v,f.s))}

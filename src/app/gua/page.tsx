@@ -76,6 +76,7 @@ function getHexagramNum(lines:{value:number}[]):number{
 
 export default function GuaPage(){
   const [question,setQuestion]=useState("");
+  const [gender,setGender]=useState<"男"|"女">("男");
   const [lines,setLines]=useState<{value:number;changing:boolean}[]|null>(null);
   const [showResult,setShowResult]=useState(false);
   const [aiText,setAiText]=useState("");const [aiLoading,setAiLoading]=useState(false);
@@ -112,6 +113,7 @@ export default function GuaPage(){
       gua:guaName,symbol:guaSymbol,desc:guaDesc,
       changeTo:changeName?(changeName):null,
       question:question||"未说明",
+      gender:gender,
       changingLines:lines.map((l,i)=>l.changing?yaos[i]:null).filter(Boolean).join("、"),
     };
     try{
@@ -139,6 +141,13 @@ export default function GuaPage(){
         </div>
 
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-6">
+          <div className="flex items-center gap-3 mb-4">
+            <span className="text-xs text-gray-400">性别</span>
+            <div className="flex gap-1 p-0.5 bg-[var(--silk)] rounded-lg">
+              <button onClick={()=>setGender("男")} className={`px-4 py-1.5 text-xs rounded-md font-medium transition-all ${gender==="男"?"bg-white shadow-sm text-[var(--ink)]":"text-gray-400"}`}>男</button>
+              <button onClick={()=>setGender("女")} className={`px-4 py-1.5 text-xs rounded-md font-medium transition-all ${gender==="女"?"bg-white shadow-sm text-[var(--ink)]":"text-gray-400"}`}>女</button>
+            </div>
+          </div>
           <label className="block text-xs text-gray-400 mb-2">心中所问（可留空）</label>
           <textarea value={question} onChange={e=>setQuestion(e.target.value)} rows={2}
             placeholder="默念一件事，再起卦。如：近期是否宜变动工作？"
