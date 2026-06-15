@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 const KEY = "sk-819796303e074de98154f05a4f930c1b";
 const URL = "https://api.deepseek.com/v1/chat/completions";
 
-const SYS = "你是一个返回JSON的AI API。只返回一个JSON对象，不要markdown标记，不要额外文字。";
+const SYS = "你是一个返回JSON的命理分析引擎。只返回一个JSON对象，不要markdown标记，不要额外文字。";
 
 const safe = (v: any, fallback: string = "") =>
   typeof v === "string" ? v : Array.isArray(v) ? v.join("、") : fallback;

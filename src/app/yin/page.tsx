@@ -161,7 +161,7 @@ export default function YinPage(){
               {!aiText&&!aiLoading&&!aiParsed&&(
                 <button type="button" onClick={fetchAI}
                   className="w-full bg-[var(--ink)] text-[var(--gold)] rounded-full py-3 font-bold text-sm hover:bg-black shadow-sm mb-4">
-                  月老详解 · AI 解读
+                  月老详解
                 </button>
               )}
               {aiLoading&&(

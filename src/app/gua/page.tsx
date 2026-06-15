@@ -222,7 +222,7 @@ export default function GuaPage(){
                 {!aiText&&!aiLoading&&!aiParsed&&(
                   <button type="button" onClick={fetchAI}
                     className="w-full bg-[var(--ink)] text-[var(--gold)] rounded-full py-3 font-bold text-sm hover:bg-black shadow-sm">
-                    解卦 · AI 解读
+                    解卦
                   </button>
                 )}
                 {aiLoading&&(
@@ -235,7 +235,7 @@ export default function GuaPage(){
                 <div
                   className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-5">
                   <h3 className="text-sm font-bold text-[var(--gold)] mb-3 serif flex items-center gap-2">
-                    <span className="w-1.5 h-4 bg-[var(--gold)] rounded-sm"/> AI 解卦
+                    <span className="w-1.5 h-4 bg-[var(--gold)] rounded-sm"/> 解卦
                   </h3>
                   {aiParsed ? (
                     <div className="text-sm text-gray-700 leading-loose whitespace-pre-line">
