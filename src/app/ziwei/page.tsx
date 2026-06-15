@@ -180,10 +180,10 @@ export default function ZiWeiPage(){
         <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100 text-left">
           <div className="space-y-5">
             <input type="text" value={name} onChange={e=>setName(e.target.value)} placeholder="你的称呼（选填）" className="w-full bg-[var(--silk)] rounded-2xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[var(--gold)]"/>
-            <div className="flex gap-2 p-1 bg-[var(--silk)] rounded-xl">{["男命","女命"].map(g=>(<button key={g} onClick={()=>setGender(g)} className={`flex-1 py-2.5 text-sm rounded-lg font-medium ${gender===g?"bg-white shadow-sm text-[var(--ink)]":"text-gray-400"}`}>{g}</button>))}</div>
+            <div className="flex gap-2 p-1 bg-[var(--silk)] rounded-xl">{["男命","女命"].map(g=>(<button type="button" key={g} onClick={()=>setGender(g)} className={`flex-1 py-2.5 text-sm rounded-lg font-medium ${gender===g?"bg-white shadow-sm text-[var(--ink)]":"text-gray-400"}`}>{g}</button>))}</div>
             <div><label className="block text-xs text-gray-400 mb-1">出生地</label><input type="text" value={city} onChange={e=>setCity(e.target.value)} placeholder="如：北京" className="w-full bg-[var(--silk)] rounded-2xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[var(--gold)]"/></div>
             <div className="grid grid-cols-2 gap-3">{[{l:"年",v:year,s:setYear},{l:"月",v:month,s:setMonth},{l:"日",v:day,s:setDay},{l:"时(0-23)",v:hour,s:setHour}].map(f=>(<div key={f.l}><label className="block text-xs text-gray-400 mb-1">{f.l}</label><input type="number" value={f.v} onChange={e=>f.s(e.target.value)} className="w-full bg-[var(--silk)] rounded-2xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[var(--gold)]"/></div>))}</div>
-            <button onClick={handleCalc} className="w-full bg-[var(--ink)] hover:bg-black text-white rounded-full py-4 mt-2 font-semibold tracking-wider shadow-lg">排布先天格局</button>
+            <button type="button" onTouchStart={(e:any) => { e.preventDefault(); handleCalc(); }} onClick={handleCalc} className="w-full bg-[var(--ink)] hover:bg-black text-white rounded-full py-4 mt-2 font-semibold tracking-wider shadow-lg cursor-pointer select-none" style={{ WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation' }}>排布先天格局</button>
           </div>
         </div>
       </section>)}
@@ -206,7 +206,7 @@ export default function ZiWeiPage(){
         {/* TCM */}
         <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 mb-5"><div className="flex items-center gap-2 mb-3"><span className="w-1 h-4 bg-[var(--gold)] rounded-sm"/><h2 className="text-sm font-semibold text-gray-500 tracking-wider">中医养生</h2></div><p className="text-xs text-gray-500 mb-3">{result.tcm.desc}</p><div className="grid grid-cols-2 gap-3"><div className="bg-[var(--pine-bg)] rounded-xl p-3"><span className="inline-block bg-[var(--pine)] text-white text-[9px] px-2 py-0.5 rounded mb-2">宜</span><ul className="text-[11px] leading-relaxed text-gray-700 space-y-0.5">{result.tcm.dos.map((d,i)=><li key={i}>· {d}</li>)}</ul></div><div className="bg-[var(--rose-bg)] rounded-xl p-3"><span className="inline-block bg-[var(--rose)] text-white text-[9px] px-2 py-0.5 rounded mb-2">忌</span><ul className="text-[11px] leading-relaxed text-gray-700 space-y-0.5">{result.tcm.donts.map((d,i)=><li key={i}>· {d}</li>)}</ul></div></div></div>
         {/* Paywall */}
-        <div className="relative pb-10"><div className="blur-[2px] opacity-40 pointer-events-none select-none space-y-3"><div className="bg-white p-5 rounded-2xl border border-gray-100"><h4 className="text-sm font-bold text-[var(--gold)] mb-2">事业与财富 · 破局之钥</h4><p className="text-xs text-gray-500">你真正适合的方向是什么？哪一年是转折点？</p></div><div className="bg-white p-5 rounded-2xl border border-gray-100"><h4 className="text-sm font-bold text-[var(--gold)] mb-2">感情与归宿 · 聆听委屈</h4><p className="text-xs text-gray-500">你需要的是一个什么样的伴侣——不是条件，是感觉。</p></div></div><div className="absolute inset-0 flex items-center justify-center"><div className="bg-white/90 backdrop-blur-xl p-6 rounded-3xl shadow-xl border border-white w-full max-w-xs text-center"><h3 className="text-lg font-bold mb-2 serif">上面只是轮廓。<br/>故事的后半段，在盘里。</h3><ul className="text-xs text-gray-600 space-y-1.5 mb-5 mx-auto w-fit text-left"><li>💰 财富卡点与爆发年</li><li>💕 正缘画像与相遇时机</li><li>📈 未来十年大限策略</li><li>🌿 专属中医体质调理方案</li></ul>{!orderId&&(<button onClick={createOrder} className="w-full bg-[var(--ink)] text-[var(--gold)] rounded-full py-3 font-bold text-sm shadow-lg hover:bg-black">解锁 AI 深度命书 · ￥19.9</button>)}{orderId&&(<div className="py-3 text-center"><div className="animate-spin rounded-full h-6 w-6 border-2 border-t-transparent mx-auto mb-2" style={{borderColor:"var(--gold)",borderTopColor:"transparent"}}/><p className="text-xs text-gray-400">等待支付确认…</p></div>)}<p className="text-[10px] text-gray-300 mt-3">已有 3,428 位行路人在此找到心安</p></div></div></div>
+        <div className="relative pb-10"><div className="blur-[2px] opacity-40 pointer-events-none select-none space-y-3"><div className="bg-white p-5 rounded-2xl border border-gray-100"><h4 className="text-sm font-bold text-[var(--gold)] mb-2">事业与财富 · 破局之钥</h4><p className="text-xs text-gray-500">你真正适合的方向是什么？哪一年是转折点？</p></div><div className="bg-white p-5 rounded-2xl border border-gray-100"><h4 className="text-sm font-bold text-[var(--gold)] mb-2">感情与归宿 · 聆听委屈</h4><p className="text-xs text-gray-500">你需要的是一个什么样的伴侣——不是条件，是感觉。</p></div></div><div className="absolute inset-0 flex items-center justify-center"><div className="bg-white/90 backdrop-blur-xl p-6 rounded-3xl shadow-xl border border-white w-full max-w-xs text-center"><h3 className="text-lg font-bold mb-2 serif">上面只是轮廓。<br/>故事的后半段，在盘里。</h3><ul className="text-xs text-gray-600 space-y-1.5 mb-5 mx-auto w-fit text-left"><li>💰 财富卡点与爆发年</li><li>💕 正缘画像与相遇时机</li><li>📈 未来十年大限策略</li><li>🌿 专属中医体质调理方案</li></ul>{!orderId&&(<button type="button" onClick={createOrder} className="w-full bg-[var(--ink)] text-[var(--gold)] rounded-full py-3 font-bold text-sm shadow-lg hover:bg-black">解锁 AI 深度命书 · ￥19.9</button>)}{orderId&&(<div className="py-3 text-center"><div className="animate-spin rounded-full h-6 w-6 border-2 border-t-transparent mx-auto mb-2" style={{borderColor:"var(--gold)",borderTopColor:"transparent"}}/><p className="text-xs text-gray-400">等待支付确认…</p></div>)}<p className="text-[10px] text-gray-300 mt-3">已有 3,428 位行路人在此找到心安</p></div></div></div>
       </section>)}
 
       {/* PAID */}
@@ -229,11 +229,11 @@ export default function ZiWeiPage(){
         {/* Health */}
         {ai.health ? (<div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 mb-4"><h3 className="text-sm font-bold text-[var(--gold)] mb-3 flex items-center gap-2 serif"><span className="w-1.5 h-4 bg-[var(--gold)] rounded-sm"/>健康养真</h3><p className="text-sm text-gray-700 leading-relaxed">{ai.health}</p></div>) : null}
         <div className="text-center space-y-3 pb-10">
-          <button onClick={generatePoster} disabled={genning}
+          <button type="button" onClick={generatePoster} disabled={genning}
             className="bg-white border border-[var(--gold)] text-[var(--gold)] hover:bg-[var(--gold)] hover:text-white transition-colors rounded-full px-6 py-2.5 text-sm font-semibold tracking-wider shadow-sm w-full">
             {genning?"正在生成箴言卡…":"生成我的今日留白箴言卡"}
           </button>
-          <button onClick={()=>{setState("preview");setAi(null);setOrderId("")}} className="text-xs text-gray-300 hover:text-gray-500">重新排盘</button></div>
+          <button type="button" onClick={()=>{setState("preview");setAi(null);setOrderId("")}} className="text-xs text-gray-300 hover:text-gray-500">重新排盘</button></div>
       </section>)}
     {/* /AnimatePresence */}
 
@@ -267,7 +267,7 @@ export default function ZiWeiPage(){
         onClick={closeModal}>
         <div className="relative max-w-sm w-full animate-in" onClick={e=>e.stopPropagation()}>
           {/* Close button */}
-          <button onClick={closeModal}
+          <button type="button" onClick={closeModal}
             className="absolute -top-10 right-0 text-white/70 hover:text-white text-2xl leading-none p-1 z-10">✕</button>
           {/* Guidance text */}
           <p className="text-white/80 text-xs text-center mb-3 tracking-wider">
@@ -276,7 +276,7 @@ export default function ZiWeiPage(){
           {/* Poster image */}
           <img src={posterDataUrl} alt="箴言卡" className="w-full rounded-2xl shadow-2xl"/>
           {/* Bottom close */}
-          <button onClick={closeModal}
+          <button type="button" onClick={closeModal}
             className="w-full mt-4 py-3 rounded-full text-sm font-medium text-white/60 hover:text-white border border-white/20 hover:border-white/40 transition-colors">
             关闭
           </button>

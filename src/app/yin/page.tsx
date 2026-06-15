@@ -117,7 +117,7 @@ export default function YinPage(){
           </div>
         </div>
 
-        <button onClick={()=>{setShowResult(true);setAiText("");setAiParsed(null)}}
+        <button type="button" onClick={()=>{setShowResult(true);setAiText("");setAiParsed(null)}}
           className="w-full bg-[var(--ink)] hover:bg-black text-white rounded-full py-4 font-semibold tracking-wider shadow-lg mb-6">
           合 婚
         </button>
@@ -159,7 +159,7 @@ export default function YinPage(){
 
               {/* AI */}
               {!aiText&&!aiLoading&&!aiParsed&&(
-                <button onClick={fetchAI}
+                <button type="button" onClick={fetchAI}
                   className="w-full bg-[var(--ink)] text-[var(--gold)] rounded-full py-3 font-bold text-sm hover:bg-black shadow-sm mb-4">
                   月老详解 · AI 解读
                 </button>
@@ -184,7 +184,7 @@ export default function YinPage(){
                 </div>
               )}
               <div className="text-center pb-10">
-                <button onClick={()=>{setShowResult(false);setAiText("");setAiParsed(null)}}
+                <button type="button" onClick={()=>{setShowResult(false);setAiText("");setAiParsed(null)}}
                   className="text-xs text-gray-300 hover:text-gray-500">重新测算</button>
               </div>
             </div>

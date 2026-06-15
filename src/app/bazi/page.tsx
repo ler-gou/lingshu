@@ -54,221 +54,204 @@ export default function BaziPage(){
 
   return(
     <main className="min-h-screen pb-20 selection:bg-[var(--gold)] selection:text-white">
-      {/* Nav */}
       <div className="w-full max-w-3xl mx-auto px-6 pt-8 pb-4">
         <Link href="/" className="text-sm text-gray-400 hover:text-gray-600 transition-colors">← 灵枢</Link>
       </div>
 
-      {/* STATE 1: Input */}
-      {/* AnimatePresence */}
-        {state==="input"&&(
-          <section
-            className="w-full max-w-xl mx-auto px-6 mt-4 text-center">
-            <h1 className="text-3xl md:text-4xl font-bold leading-snug mb-4 serif">
-              揭开你命盘里的<br/>第一层密码。
-            </h1>
-            <p className="text-gray-400 mb-10 text-sm leading-relaxed">
-              每一个对自己认真的人，<br/>都值得被古老的智慧温柔注视一次。
-            </p>
+      {/* ─── STATE 1: Input ─── */}
+      {state==="input"&&(
+        <section className="w-full max-w-xl mx-auto px-6 mt-4 text-center">
+          <h1 className="text-3xl md:text-4xl font-bold leading-snug mb-4 serif">
+            揭开你命盘里的<br/>第一层密码。
+          </h1>
+          <p className="text-gray-400 mb-10 text-sm leading-relaxed">
+            每一个对自己认真的人，<br/>都值得被古老的智慧温柔注视一次。
+          </p>
 
-            <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 text-left">
-              <div className="mb-4">
-                <label className="block text-xs text-gray-400 mb-1.5">出生地</label>
-                <input type="text" value={city} onChange={e=>setCity(e.target.value)} placeholder="如：北京"
-                  className="w-full bg-[var(--silk)] rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[var(--gold)] transition-all"/>
+          <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 text-left">
+            <div className="mb-4">
+              <label className="block text-xs text-gray-400 mb-1.5">出生地</label>
+              <input type="text" value={city} onChange={e=>setCity(e.target.value)} placeholder="如：北京"
+                className="w-full bg-[var(--silk)] rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[var(--gold)] transition-all"/>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              {[{l:"出生年",v:year,s:setYear},{l:"月",v:month,s:setMonth},{l:"日",v:day,s:setDay},{l:"时(0-23)",v:hour,s:setHour}].map(f=>(
+                <div key={f.l}>
+                  <label className="block text-xs text-gray-400 mb-1.5">{f.l}</label>
+                  <input type="number" value={f.v} onChange={e=>f.s(e.target.value)}
+                    className="w-full bg-[var(--silk)] rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[var(--gold)] transition-all"
+                    placeholder={f.l}/>
+                </div>
+              ))}
+            </div>
+            <button type="button"
+              onClick={handleCalc}
+              className="w-full bg-[var(--ink)] hover:bg-black text-white rounded-full py-4 mt-6 font-semibold tracking-wider transition-all shadow-lg cursor-pointer select-none"
+              style={{ WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
+              开启我的命运密钥
+            </button>
+          </div>
+        </section>
+      )}
+
+      {/* ─── STATE 2: Preview ─── */}
+      {state==="preview"&&result&&(
+        <section className="w-full max-w-xl mx-auto px-6 mt-4">
+          <div className="text-center mb-8">
+            <div className="inline-block bg-[var(--gold)] text-white px-4 py-1 rounded-full text-xs tracking-wider mb-5">
+              命宫 · {result.dayMaster}{result.dayMasterElement}日主
+            </div>
+            <h2 className="text-2xl font-bold mb-3 serif">
+              {result.strength==="身强"?"【 天生的扛事者 】":"【 细腻的洞察者 】"}
+            </h2>
+            <div className="flex justify-center gap-3 mb-6">
+              {[{l:"年",v:result.yearPillar},{l:"月",v:result.monthPillar},{l:"日",v:result.dayPillar},{l:"时",v:result.hourPillar}].map(p=>(
+                <div key={p.l} className="bg-white rounded-2xl px-4 py-3 shadow-sm border border-gray-100">
+                  <div className="text-xl font-bold serif">{p.v}</div>
+                  <div className="text-xs text-gray-400 mt-0.5">{p.l}柱</div>
+                </div>
+              ))}
+            </div>
+            <p className="text-gray-600 text-base leading-loose text-left bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+              你的日主是{result.dayMaster}{result.dayMasterElement}，生在{result.monthPillar}月。
+              {result.strength==="身强"?
+                "说白了，你这种人天生扛得住事。别人慌了你还在稳着，别人散了你还在撑着。但有一个副作用你可能从来没跟人说过——你累。不是身体的累，是那种所有人都觉得你没问题、所以你不好意思说自己有问题的累。":
+                "你是那种能在嘈杂房间里听出一个人情绪变化的人。你比多数人更早知道事情不对劲，也更早感受到别人的冷淡。这种敏感让你比别人容易受伤，但它也是你最大的天赋——你看得见别人看不见的东西。"}
+            </p>
+          </div>
+
+          <div className="relative mt-6">
+            <div className="blur-[2px] opacity-40 pointer-events-none select-none space-y-4">
+              <div className="bg-white p-5 rounded-2xl border border-gray-100">
+                <h4 className="text-sm font-bold text-[var(--gold)] mb-2">事业与财运 · 破局之钥</h4>
+                <p className="text-xs text-gray-500 leading-relaxed">你的正财稳健，但偏财常有起伏。这意味着你无法通过单纯的机械工作致富，财富爆发力藏在你一直想做却不敢启动的那个念头里。</p>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                {[{l:"出生年",v:year,s:setYear},{l:"月",v:month,s:setMonth},{l:"日",v:day,s:setDay},{l:"时(0-23)",v:hour,s:setHour}].map(f=>(
-                  <div key={f.l}>
-                    <label className="block text-xs text-gray-400 mb-1.5">{f.l}</label>
-                    <input type="number" value={f.v} onChange={e=>f.s(e.target.value)}
-                      className="w-full bg-[var(--silk)] rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[var(--gold)] transition-all"
-                      placeholder={f.l}/>
+              <div className="bg-white p-5 rounded-2xl border border-gray-100">
+                <h4 className="text-sm font-bold text-[var(--gold)] mb-2">感情与归宿 · 聆听委屈</h4>
+                <p className="text-xs text-gray-500 leading-relaxed">你在感情中最大的软肋，是习惯性地把委屈藏在心里，用沉默来消化伤害。你需要的是一个能听懂你沉默背后疲惫的人。</p>
+              </div>
+              <div className="bg-white p-5 rounded-2xl border border-gray-100">
+                <h4 className="text-sm font-bold text-[var(--gold)] mb-2">健康与调理 · 倪师养生</h4>
+                <p className="text-xs text-gray-500 leading-relaxed">思虑过度易伤脾胃。依据《人纪》调理原则，为你定制专属生活处方——从饮食到作息，从经络到情志。</p>
+              </div>
+            </div>
+
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="bg-white/90 backdrop-blur-xl p-8 rounded-3xl shadow-xl border border-white max-w-sm w-full text-center">
+                <h3 className="text-xl font-bold mb-2 serif">刚才那些话，只是开场。</h3>
+                <p className="text-gray-400 text-sm mb-6">
+                  你真正在意的——钱、感情、身体、未来这几年该往哪走——还在后面。</p>
+                {!aiLoading&&(
+                  <button type="button" onClick={fetchAI}
+                    className="w-full bg-[var(--ink)] text-[var(--gold)] rounded-full py-4 font-bold text-base shadow-lg flex items-center justify-center gap-2 hover:bg-black transition-colors cursor-pointer select-none"
+                    style={{ WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
+                    <span>解锁 AI 深度命书</span>
+                    <span className="text-white ml-1">· 免费</span>
+                  </button>
+                )}
+                {aiLoading&&(
+                  <div className="py-4 text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-2 border-t-transparent mx-auto mb-2" style={{borderColor:"var(--gold)",borderTopColor:"transparent"}}/>
+                    <p className="text-xs text-gray-400">AI 正在为你撰写命书…</p>
+                  </div>
+                )}
+                <p className="text-xs text-gray-300 mt-4">已有 1,286 位行路人在此找到心安</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ─── STATE 3: Paid Report ─── */}
+      {state==="paid"&&result&&(
+        <section className="w-full max-w-xl mx-auto px-6 mt-4">
+          <div className="text-center mb-8">
+            <div className="inline-block bg-[var(--gold)] text-white px-4 py-1 rounded-full text-xs tracking-wider mb-5">
+              已解锁 · 全盘命理档案
+            </div>
+            <h2 className="text-2xl font-bold mb-3 serif">
+              {result.strength==="身强"?"【 天生的破局者 】":"【 细腻的洞察者 】"}
+            </h2>
+            <div className="flex justify-center gap-3 mb-4">
+              {[{l:"年",v:result.yearPillar},{l:"月",v:result.monthPillar},{l:"日",v:result.dayPillar},{l:"时",v:result.hourPillar}].map(p=>(
+                <div key={p.l} className="bg-white rounded-2xl px-4 py-3 shadow-sm border border-gray-100">
+                  <div className="text-xl font-bold serif">{p.v}</div>
+                  <div className="text-xs text-gray-400 mt-0.5">{p.l}柱</div>
+                </div>
+              ))}
+            </div>
+            <p className="text-sm text-gray-400">
+              {result.dayMaster}{result.dayMasterElement}日主 · {result.strength} · {result.pattern} · 喜{result.favorable}
+            </p>
+          </div>
+
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-6">
+            <h3 className="text-sm font-semibold text-gray-500 mb-4">五行能量分布</h3>
+            <div className="space-y-2">
+              {Object.entries(result.wuxing).map(([el,cnt])=>{
+                const pct=Math.min(cnt*14,100);
+                return(
+                  <div key={el} className="flex items-center gap-3 text-sm">
+                    <span className="w-6 text-gray-500">{el}</span>
+                    <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                      <div className="h-full rounded-full transition-all duration-700"
+                        style={{width:`${pct}%`,background:el===result.dayMasterElement?"var(--gold)":"var(--border)"}}/>
+                    </div>
+                    <span className="w-6 text-right text-xs text-gray-400">{cnt}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            {(aiParsed||aiText)?(
+              <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+                <h3 className="text-lg font-bold text-[var(--gold)] mb-6 flex items-center gap-2 serif">
+                  <span className="w-1.5 h-1.5 bg-[var(--gold)] rounded-full"/> AI 命书详解
+                </h3>
+                {aiParsed ? (
+                  <div className="text-sm text-gray-700 leading-loose space-y-4">
+                    <div className="whitespace-pre-line">{aiParsed.summary}</div>
+                    {aiParsed.career && <div className="pt-4 border-t border-gray-100"><span className="text-xs font-bold text-gray-500">事业与财富</span><p className="mt-1 whitespace-pre-line">{aiParsed.career}</p></div>}
+                    {aiParsed.relationship && <div className="pt-3"><span className="text-xs font-bold text-gray-500">感情与归宿</span><p className="mt-1 whitespace-pre-line">{aiParsed.relationship}</p></div>}
+                    {aiParsed.health && <div className="pt-3"><span className="text-xs font-bold text-gray-500">健康养真</span><p className="mt-1 whitespace-pre-line">{aiParsed.health}</p></div>}
+                  </div>
+                ) : (
+                  <div className="text-sm text-gray-700 leading-loose whitespace-pre-line">{aiText}</div>
+                )}
+              </div>
+            ):(
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-2 border-t-transparent mx-auto mb-3" style={{borderColor:"var(--gold)",borderTopColor:"transparent"}}/>
+                <p className="text-xs text-gray-400">正在解读…</p>
+              </div>
+            )}
+
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+              <h3 className="text-sm font-semibold text-gray-500 mb-4">大运走势</h3>
+              <div className="space-y-2">
+                {result.dayun.map((d,i)=>(
+                  <div key={i} className={`flex items-center gap-3 text-sm py-1.5 px-3 rounded-xl ${i===1?"bg-[#fdf8ed]":""}`}>
+                    <div className={`w-1.5 h-1.5 rounded-full ${i===1?"bg-[var(--gold)]":"bg-gray-200"}`}/>
+                    <span className={i===1?"font-semibold":""}>{d}{i===1&&" ← 当前"}</span>
                   </div>
                 ))}
               </div>
-              <button onClick={handleCalc}
-                className="w-full bg-[var(--ink)] hover:bg-black text-white rounded-full py-4 mt-6 font-semibold tracking-wider transition-all shadow-lg">
-                开启我的命运密钥
+            </div>
+
+            <div className="text-center pt-4 space-y-3">
+              <button className="bg-white border border-[var(--gold)] text-[var(--gold)] hover:bg-[var(--gold)] hover:text-white transition-colors rounded-full px-6 py-2.5 text-sm font-semibold tracking-wider shadow-sm w-full">
+                生成我的今日留白箴言卡
+              </button>
+              <button onClick={()=>{setState("preview");setAiText("");setAiParsed(null)}}
+                className="text-xs text-gray-300 hover:text-gray-500 transition-colors">
+                重新排盘
               </button>
             </div>
-          </section>
-        )}
-
-        {/* STATE 2: Preview (blurred content + paywall) */}
-        {state==="preview"&&result&&(
-          <section
-            className="w-full max-w-xl mx-auto px-6 mt-4">
-            {/* Free preview — readable */}
-            <div className="text-center mb-8">
-              <div className="inline-block bg-[var(--gold)] text-white px-4 py-1 rounded-full text-xs tracking-wider mb-5">
-                命宫 · {result.dayMaster}{result.dayMasterElement}日主
-              </div>
-              <h2 className="text-2xl font-bold mb-3 serif">
-                {result.strength==="身强"?"【 天生的扛事者 】":"【 细腻的洞察者 】"}
-              </h2>
-
-              {/* Four pillars */}
-              <div className="flex justify-center gap-3 mb-6">
-                {[{l:"年",v:result.yearPillar},{l:"月",v:result.monthPillar},{l:"日",v:result.dayPillar},{l:"时",v:result.hourPillar}].map(p=>(
-                  <div key={p.l} className="bg-white rounded-2xl px-4 py-3 shadow-sm border border-gray-100">
-                    <div className="text-xl font-bold serif">{p.v}</div>
-                    <div className="text-xs text-gray-400 mt-0.5">{p.l}柱</div>
-                  </div>
-                ))}
-              </div>
-
-              <p className="text-gray-600 text-base leading-loose text-left bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                你的日主是{result.dayMaster}{result.dayMasterElement}，生在{result.monthPillar}月。
-                {result.strength==="身强"?
-                  "说白了，你这种人天生扛得住事。别人慌了你还在稳着，别人散了你还在撑着。但有一个副作用你可能从来没跟人说过——你累。不是身体的累，是那种所有人都觉得你没问题、所以你不好意思说自己有问题的累。":
-                  "你是那种能在嘈杂房间里听出一个人情绪变化的人。你比多数人更早知道事情不对劲，也更早感受到别人的冷淡。这种敏感让你比别人容易受伤，但它也是你最大的天赋——你看得见别人看不见的东西。"}
-              </p>
-            </div>
-
-            {/* Blurred preview + paywall */}
-            <div className="relative mt-6">
-              {/* Blurred preview of what you'll unlock */}
-              <div className="blur-[2px] opacity-40 pointer-events-none select-none space-y-4">
-                <div className="bg-white p-5 rounded-2xl border border-gray-100">
-                  <h4 className="text-sm font-bold text-[var(--gold)] mb-2">事业与财运 · 破局之钥</h4>
-                  <p className="text-xs text-gray-500 leading-relaxed">你的正财稳健，但偏财常有起伏。这意味着你无法通过单纯的机械工作致富，财富爆发力藏在你一直想做却不敢启动的那个念头里。</p>
-                </div>
-                <div className="bg-white p-5 rounded-2xl border border-gray-100">
-                  <h4 className="text-sm font-bold text-[var(--gold)] mb-2">感情与归宿 · 聆听委屈</h4>
-                  <p className="text-xs text-gray-500 leading-relaxed">你在感情中最大的软肋，是习惯性地把委屈藏在心里，用沉默来消化伤害。你需要的是一个能听懂你沉默背后疲惫的人。</p>
-                </div>
-                <div className="bg-white p-5 rounded-2xl border border-gray-100">
-                  <h4 className="text-sm font-bold text-[var(--gold)] mb-2">健康与调理 · 倪师养生</h4>
-                  <p className="text-xs text-gray-500 leading-relaxed">思虑过度易伤脾胃。依据《人纪》调理原则，为你定制专属生活处方——从饮食到作息，从经络到情志。</p>
-                </div>
-              </div>
-
-              {/* Paywall overlay */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div
-                  className="bg-white/90 backdrop-blur-xl p-8 rounded-3xl shadow-xl border border-white max-w-sm w-full text-center">
-                  <h3 className="text-xl font-bold mb-2 serif">刚才那些话，只是开场。</h3>
-                  <p className="text-gray-400 text-sm mb-6">
-                    你真正在意的——钱、感情、身体、<br/>未来这几年该往哪走——还在后面。</p>
-                  {!aiLoading&&!aiParsed&&(
-                    <button onClick={fetchAI}
-                      className="w-full bg-[var(--ink)] text-[var(--gold)] rounded-full py-4 font-bold text-base shadow-lg flex items-center justify-center gap-2 hover:bg-black transition-colors">
-                      <span>解锁 AI 深度命书</span>
-                      <span className="text-white ml-1">· 免费</span>
-                    </button>
-                  )}
-                  {aiLoading&&(
-                    <div className="py-4 text-center">
-                      <div className="animate-spin rounded-full h-8 w-8 border-2 border-t-transparent mx-auto mb-2" style={{borderColor:"var(--gold)",borderTopColor:"transparent"}}/>
-                      <p className="text-xs text-gray-400">AI 正在为你撰写命书…</p>
-                    </div>
-                  )}
-                  <p className="text-xs text-gray-300 mt-4">已有 1,286 位行路人在此找到心安</p>
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* STATE 3: Full Paid Report */}
-        {state==="paid"&&result&&(
-          <section
-            className="w-full max-w-xl mx-auto px-6 mt-4">
-            <div className="text-center mb-8">
-              <div className="inline-block bg-[var(--gold)] text-white px-4 py-1 rounded-full text-xs tracking-wider mb-5">
-                已解锁 · 全盘命理档案
-              </div>
-              <h2 className="text-2xl font-bold mb-3 serif">
-                {result.strength==="身强"?"【 天生的破局者 】":"【 细腻的洞察者 】"}
-              </h2>
-
-              {/* Pillars row */}
-              <div className="flex justify-center gap-3 mb-4">
-                {[{l:"年",v:result.yearPillar},{l:"月",v:result.monthPillar},{l:"日",v:result.dayPillar},{l:"时",v:result.hourPillar}].map(p=>(
-                  <div key={p.l} className="bg-white rounded-2xl px-4 py-3 shadow-sm border border-gray-100">
-                    <div className="text-xl font-bold serif">{p.v}</div>
-                    <div className="text-xs text-gray-400 mt-0.5">{p.l}柱</div>
-                  </div>
-                ))}
-              </div>
-              <p className="text-sm text-gray-400">
-                {result.dayMaster}{result.dayMasterElement}日主 · {result.strength} · {result.pattern} · 喜{result.favorable}
-              </p>
-            </div>
-
-            {/* Wuxing bars */}
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-6">
-              <h3 className="text-sm font-semibold text-gray-500 mb-4">五行能量分布</h3>
-              <div className="space-y-2">
-                {Object.entries(result.wuxing).map(([el,cnt])=>{
-                  const pct=Math.min(cnt*14,100);
-                  return(
-                    <div key={el} className="flex items-center gap-3 text-sm">
-                      <span className="w-6 text-gray-500">{el}</span>
-                      <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-                        <div className="h-full rounded-full transition-all duration-700"
-                          style={{width:`${pct}%`,background:el===result.dayMasterElement?"var(--gold)":"var(--border)"}}/>
-                      </div>
-                      <span className="w-6 text-right text-xs text-gray-400">{cnt}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* AI report sections */}
-            <div className="space-y-6">
-              {(aiParsed||aiText)?(
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-                  <h3 className="text-lg font-bold text-[var(--gold)] mb-6 flex items-center gap-2 serif">
-                    <span className="w-1.5 h-1.5 bg-[var(--gold)] rounded-full"/> AI 命书详解
-                  </h3>
-                  {aiParsed ? (
-                    <div className="text-sm text-gray-700 leading-loose space-y-4">
-                      <div className="whitespace-pre-line">{aiParsed.summary}</div>
-                      {aiParsed.career && <div className="pt-4 border-t border-gray-100"><span className="text-xs font-bold text-gray-500">事业与财富</span><p className="mt-1 whitespace-pre-line">{aiParsed.career}</p></div>}
-                      {aiParsed.relationship && <div className="pt-3"><span className="text-xs font-bold text-gray-500">感情与归宿</span><p className="mt-1 whitespace-pre-line">{aiParsed.relationship}</p></div>}
-                      {aiParsed.health && <div className="pt-3"><span className="text-xs font-bold text-gray-500">健康养真</span><p className="mt-1 whitespace-pre-line">{aiParsed.health}</p></div>}
-                    </div>
-                  ) : (
-                    <div className="text-sm text-gray-700 leading-loose whitespace-pre-line">{aiText}</div>
-                  )}
-                </div>
-              ):(
-                <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-2 border-t-transparent mx-auto mb-3" style={{borderColor:"var(--gold)",borderTopColor:"transparent"}}/>
-                  <p className="text-xs text-gray-400">正在解读…</p>
-                </div>
-              )}
-
-              {/* Dayun */}
-              <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                <h3 className="text-sm font-semibold text-gray-500 mb-4">大运走势</h3>
-                <div className="space-y-2">
-                  {result.dayun.map((d,i)=>(
-                    <div key={i} className={`flex items-center gap-3 text-sm py-1.5 px-3 rounded-xl ${i===1?"bg-[var(--gold)/10]":""}`}>
-                      <div className={`w-1.5 h-1.5 rounded-full ${i===1?"bg-[var(--gold)]":"bg-gray-200"}`}/>
-                      <span className={i===1?"font-semibold":""}>{d}{i===1&&" ← 当前"}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Share */}
-              <div className="text-center pt-4 space-y-3">
-                <button className="bg-white border border-[var(--gold)] text-[var(--gold)] hover:bg-[var(--gold)] hover:text-white transition-colors rounded-full px-6 py-2.5 text-sm font-semibold tracking-wider shadow-sm w-full">
-                  生成我的今日留白箴言卡
-                </button>
-                <button onClick={()=>{setState("preview");setAiText("");setAiParsed(null)}}
-                  className="text-xs text-gray-300 hover:text-gray-500 transition-colors">
-                  重新排盘
-                </button>
-              </div>
-            </div>
-          </section>
-        )}
-      {/* /AnimatePresence */}
+          </div>
+        </section>
+      )}
     </main>
   );
 }

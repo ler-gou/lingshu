@@ -143,15 +143,15 @@ export default function GuaPage(){
           <div className="flex items-center gap-3 mb-4">
             <span className="text-xs text-gray-400">性别</span>
             <div className="flex gap-1 p-0.5 bg-[var(--silk)] rounded-lg">
-              <button onClick={()=>setGender("男")} className={`px-4 py-1.5 text-xs rounded-md font-medium transition-all ${gender==="男"?"bg-white shadow-sm text-[var(--ink)]":"text-gray-400"}`}>男</button>
-              <button onClick={()=>setGender("女")} className={`px-4 py-1.5 text-xs rounded-md font-medium transition-all ${gender==="女"?"bg-white shadow-sm text-[var(--ink)]":"text-gray-400"}`}>女</button>
+              <button type="button" onClick={()=>setGender("男")} className={`px-4 py-1.5 text-xs rounded-md font-medium transition-all ${gender==="男"?"bg-white shadow-sm text-[var(--ink)]":"text-gray-400"}`}>男</button>
+              <button type="button" onClick={()=>setGender("女")} className={`px-4 py-1.5 text-xs rounded-md font-medium transition-all ${gender==="女"?"bg-white shadow-sm text-[var(--ink)]":"text-gray-400"}`}>女</button>
             </div>
           </div>
           <label className="block text-xs text-gray-400 mb-2">心中所问（可留空）</label>
           <textarea value={question} onChange={e=>setQuestion(e.target.value)} rows={2}
             placeholder="默念一件事，再起卦。如：近期是否宜变动工作？"
             className="w-full bg-[var(--silk)] rounded-xl p-4 text-sm outline-none resize-none focus:ring-2 focus:ring-[var(--gold)] mb-4"/>
-          <button onClick={()=>{cast();setAiText("")}}
+          <button type="button" onClick={()=>{cast();setAiText("")}}
             className="w-full bg-[var(--ink)] hover:bg-black text-white rounded-full py-4 font-semibold tracking-wider shadow-lg">
             起 卦
           </button>
@@ -220,7 +220,7 @@ export default function GuaPage(){
 
                 {/* AI interpret button */}
                 {!aiText&&!aiLoading&&!aiParsed&&(
-                  <button onClick={fetchAI}
+                  <button type="button" onClick={fetchAI}
                     className="w-full bg-[var(--ink)] text-[var(--gold)] rounded-full py-3 font-bold text-sm hover:bg-black shadow-sm">
                     解卦 · AI 解读
                   </button>
@@ -252,7 +252,7 @@ export default function GuaPage(){
 
               {/* Recast */}
               <div className="text-center">
-                <button onClick={()=>{cast();setAiText("")}}
+                <button type="button" onClick={()=>{cast();setAiText("")}}
                   className="text-xs text-gray-300 hover:text-gray-500">重新起卦</button>
               </div>
 
