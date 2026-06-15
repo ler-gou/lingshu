@@ -131,6 +131,7 @@ export default function ZiWeiPage(){
 
   const displayName = name.trim()||"行路人";
   const [genning,setGenning]=useState(false);
+  const [posterDataUrl,setPosterDataUrl]=useState("");
 
   const generatePoster = async ()=>{
     if(!posterRef.current)return;
@@ -138,13 +139,12 @@ export default function ZiWeiPage(){
     try{
       const { default: html2canvas } = await import("html2canvas");
       const canvas = await html2canvas(posterRef.current, { scale: 3, backgroundColor: "#F5F5F7", useCORS: true });
-      const link = document.createElement("a");
-      link.download = `灵枢_箴言卡_${Date.now()}.png`;
-      link.href = canvas.toDataURL("image/png");
-      link.click();
+      setPosterDataUrl(canvas.toDataURL("image/png"));
     }catch(e){console.error(e)}
     setGenning(false);
   };
+
+  const closeModal = ()=>{ setPosterDataUrl("") };
 
   const PalGrid = ({ result }: { result: ChartResult }) => (
     <div className="grid grid-cols-4 gap-1.5 aspect-square mb-2 max-w-[320px] mx-auto">
@@ -247,5 +247,29 @@ export default function ZiWeiPage(){
         </div>
       </div>
     </div>
+
+    {/* ── Poster preview modal ── */}
+    {posterDataUrl && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        style={{background:"rgba(0,0,0,0.85)",backdropFilter:"blur(20px)"}}
+        onClick={closeModal}>
+        <div className="relative max-w-sm w-full animate-in" onClick={e=>e.stopPropagation()}>
+          {/* Close button */}
+          <button onClick={closeModal}
+            className="absolute -top-10 right-0 text-white/70 hover:text-white text-2xl leading-none p-1 z-10">✕</button>
+          {/* Guidance text */}
+          <p className="text-white/80 text-xs text-center mb-3 tracking-wider">
+            长按保存图片，分享你的内在力量
+          </p>
+          {/* Poster image */}
+          <img src={posterDataUrl} alt="箴言卡" className="w-full rounded-2xl shadow-2xl"/>
+          {/* Bottom close */}
+          <button onClick={closeModal}
+            className="w-full mt-4 py-3 rounded-full text-sm font-medium text-white/60 hover:text-white border border-white/20 hover:border-white/40 transition-colors">
+            关闭
+          </button>
+        </div>
+      </div>
+    )}
   </main>);
 }
