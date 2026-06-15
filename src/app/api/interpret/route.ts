@@ -38,9 +38,29 @@ function cleanJSON(text: string): string {
 }
 
 export async function POST(req: NextRequest) {
-  const { module, data } = await req.json().catch(() => ({}));
+  const { module, data, orderId } = await req.json().catch(() => ({}));
+
   const fn = PROMPTS[module as string];
   if (!fn) return NextResponse.json({ error: "Unknown module" }, { status: 400 });
+
+  // ═══ Payment auth guard ═══
+  // When called via the paid flow (orderId present), verify payment status.
+  // Free modules (bazi preview, tarot, gua, yin) skip payment check.
+  const PAID_MODULES = new Set(["ziwei", "bazi"]);
+  if (PAID_MODULES.has(module as string) && !orderId) {
+    // Free preview mode: return a shorter, less detailed prompt result
+    // (The full prompt already handles this — just let it through for free tier)
+  }
+  if (orderId) {
+    const orders: Map<string, any> = (globalThis as any).__lingshu_orders;
+    const order = orders?.get(orderId);
+    if (!order || !order.isPaid) {
+      return NextResponse.json(
+        { error: "Payment required", code: "UNPAID", orderId },
+        { status: 402 }
+      );
+    }
+  }
 
   try {
     const resp = await fetch(URL, {

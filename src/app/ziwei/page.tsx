@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
@@ -91,6 +91,7 @@ export default function ZiWeiPage(){
   const [aiLoading,setAiLoading]=useState(false);
   const [orderId,setOrderId]=useState("");
   const [selPalace,setSelPalace]=useState(0);
+  const posterRef = useRef<HTMLDivElement>(null);
 
   const handleCalc = ()=>{setState("loading");setTimeout(()=>{setResult(calc(+year,+month,+day,+hour,gender));setState("preview")},1200)};
 
@@ -129,6 +130,21 @@ export default function ZiWeiPage(){
   };
 
   const displayName = name.trim()||"行路人";
+  const [genning,setGenning]=useState(false);
+
+  const generatePoster = async ()=>{
+    if(!posterRef.current)return;
+    setGenning(true);
+    try{
+      const { default: html2canvas } = await import("html2canvas");
+      const canvas = await html2canvas(posterRef.current, { scale: 3, backgroundColor: "#F5F5F7", useCORS: true });
+      const link = document.createElement("a");
+      link.download = `灵枢_箴言卡_${Date.now()}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    }catch(e){console.error(e)}
+    setGenning(false);
+  };
 
   const PalGrid = ({ result }: { result: ChartResult }) => (
     <div className="grid grid-cols-4 gap-1.5 aspect-square mb-2 max-w-[320px] mx-auto">
@@ -184,16 +200,52 @@ export default function ZiWeiPage(){
       {/* PAID */}
       {state==="paid"&&result&&ai&&(<motion.section key="paid" initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} className="w-full max-w-xl mx-auto px-4">
         <div className="text-center mb-6"><div className="inline-block bg-[var(--gold)] text-white px-4 py-1 rounded-full text-xs tracking-wider mb-3">已解锁 · 深度命理档案</div><h2 className="text-2xl font-bold mb-1 serif">Hi, {displayName}</h2></div>
-        {/* Summary */}
-        <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 mb-4"><p className="text-sm text-gray-700 leading-relaxed">{ai.summary}</p></div>
+        {/* Summary — with graceful fallback */}
+        {ai.summary ? (
+          <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 mb-4">
+            <p className="text-sm text-gray-700 leading-relaxed">{ai.summary}</p>
+          </div>
+        ) : (
+          <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 mb-4 text-center">
+            <p className="text-sm text-gray-400">命盘解构中，稍等片刻…</p>
+          </div>
+        )}
         {/* Career */}
-        {ai.career&&(<div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 mb-4"><h3 className="text-sm font-bold text-[var(--gold)] mb-3 flex items-center gap-2 serif"><span className="w-1.5 h-4 bg-[var(--gold)] rounded-sm"/>事业与财富</h3><p className="text-sm text-gray-700 leading-relaxed">{ai.career}</p></div>)}
+        {ai.career ? (<div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 mb-4"><h3 className="text-sm font-bold text-[var(--gold)] mb-3 flex items-center gap-2 serif"><span className="w-1.5 h-4 bg-[var(--gold)] rounded-sm"/>事业与财富</h3><p className="text-sm text-gray-700 leading-relaxed">{ai.career}</p></div>) : null}
         {/* Relationship */}
-        {ai.relationship&&(<div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 mb-4"><h3 className="text-sm font-bold text-[var(--gold)] mb-3 flex items-center gap-2 serif"><span className="w-1.5 h-4 bg-[var(--gold)] rounded-sm"/>感情与归宿</h3><p className="text-sm text-gray-700 leading-relaxed">{ai.relationship}</p></div>)}
+        {ai.relationship ? (<div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 mb-4"><h3 className="text-sm font-bold text-[var(--gold)] mb-3 flex items-center gap-2 serif"><span className="w-1.5 h-4 bg-[var(--gold)] rounded-sm"/>感情与归宿</h3><p className="text-sm text-gray-700 leading-relaxed">{ai.relationship}</p></div>) : null}
         {/* Health */}
-        {ai.health&&(<div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 mb-4"><h3 className="text-sm font-bold text-[var(--gold)] mb-3 flex items-center gap-2 serif"><span className="w-1.5 h-4 bg-[var(--gold)] rounded-sm"/>健康养真</h3><p className="text-sm text-gray-700 leading-relaxed">{ai.health}</p></div>)}
-        <div className="text-center space-y-3 pb-10"><button onClick={()=>{setState("preview");setAi(null);setOrderId("")}} className="text-xs text-gray-300 hover:text-gray-500">重新排盘</button></div>
+        {ai.health ? (<div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 mb-4"><h3 className="text-sm font-bold text-[var(--gold)] mb-3 flex items-center gap-2 serif"><span className="w-1.5 h-4 bg-[var(--gold)] rounded-sm"/>健康养真</h3><p className="text-sm text-gray-700 leading-relaxed">{ai.health}</p></div>) : null}
+        <div className="text-center space-y-3 pb-10">
+          <button onClick={generatePoster} disabled={genning}
+            className="bg-white border border-[var(--gold)] text-[var(--gold)] hover:bg-[var(--gold)] hover:text-white transition-colors rounded-full px-6 py-2.5 text-sm font-semibold tracking-wider shadow-sm w-full">
+            {genning?"正在生成箴言卡…":"生成我的今日留白箴言卡"}
+          </button>
+          <button onClick={()=>{setState("preview");setAi(null);setOrderId("")}} className="text-xs text-gray-300 hover:text-gray-500">重新排盘</button></div>
       </motion.section>)}
     </AnimatePresence>
+
+    {/* ── Hidden poster template (for html2canvas generation) ── */}
+    <div ref={posterRef} className="fixed left-[-9999px] top-[-9999px] w-[375px] h-[667px] flex flex-col items-center justify-between py-12 px-8 z-[-1]"
+      style={{background:"var(--silk)"}}>
+      <div className="w-8 h-8 rounded-full border border-[var(--gold)] opacity-40 flex items-center justify-center">
+        <div className="w-2 h-2 bg-[var(--gold)] rounded-full"/>
+      </div>
+      <div className="text-center w-full">
+        <div className="text-sm text-gray-400 mb-8 tracking-widest uppercase serif">致 {displayName}</div>
+        <h2 className="text-[26px] font-bold leading-[1.8] text-[var(--ink)] serif">
+          {ai?.summary?.slice(0, 80) || "有些答案，老祖宗替我们存了两千年。"}
+        </h2>
+      </div>
+      <div className="text-center border-t border-gray-300 pt-6 w-full flex items-center justify-between px-2">
+        <div className="text-left">
+          <div className="text-lg font-bold tracking-widest text-[var(--ink)] mb-1 serif">灵<span className="text-[var(--gold)]">/</span>枢</div>
+          <div className="text-[10px] text-gray-400 tracking-wider">始于天纪 · 忠于养真</div>
+        </div>
+        <div className="w-14 h-14 bg-gray-200 rounded border border-gray-300 flex items-center justify-center">
+          <span className="text-[8px] text-gray-500 font-bold">LINGSHU</span>
+        </div>
+      </div>
+    </div>
   </main>);
 }
