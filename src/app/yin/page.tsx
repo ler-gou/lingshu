@@ -26,6 +26,7 @@ export default function YinPage(){
   const [bYear,setBYear]=useState("1990");const [bMonth,setBMonth]=useState("6");const [bDay,setBDay]=useState("15");const [bHour,setBHour]=useState("12");
   const [showResult,setShowResult]=useState(false);
   const [aiText,setAiText]=useState("");const [aiLoading,setAiLoading]=useState(false);
+  const [aiParsed,setAiParsed]=useState<{summary:string;career?:string;relationship?:string;health?:string}|null>(null);
 
   const getZodiac = (y:number)=>ZODIAC[(y-4)%12];
   const getDayStem = (y:number,m:number,d:number)=>{
@@ -68,8 +69,9 @@ export default function YinPage(){
     try{
       const resp=await fetch("/api/interpret",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({module:"yin",data})});
       const j=await resp.json();
-      setAiText(j.content||j.error||"解读失败");
-    }catch{setAiText("网络错误");}
+      if(j.parsed){setAiParsed(j.parsed);setAiText("")}
+      else{setAiText(j.content||j.error||"解读失败");setAiParsed(null)}
+    }catch{setAiText("网络错误");setAiParsed(null)}
     setAiLoading(false);
   };
 
@@ -116,7 +118,7 @@ export default function YinPage(){
           </div>
         </div>
 
-        <button onClick={()=>{setShowResult(true);setAiText("")}}
+        <button onClick={()=>{setShowResult(true);setAiText("");setAiParsed(null)}}
           className="w-full bg-[var(--ink)] hover:bg-black text-white rounded-full py-4 font-semibold tracking-wider shadow-lg mb-6">
           合 婚
         </button>
@@ -157,7 +159,7 @@ export default function YinPage(){
               </div>
 
               {/* AI */}
-              {!aiText&&!aiLoading&&(
+              {!aiText&&!aiLoading&&!aiParsed&&(
                 <button onClick={fetchAI}
                   className="w-full bg-[var(--ink)] text-[var(--gold)] rounded-full py-3 font-bold text-sm hover:bg-black shadow-sm mb-4">
                   月老详解 · AI 解读
@@ -166,17 +168,24 @@ export default function YinPage(){
               {aiLoading&&(
                 <div className="text-center py-3"><div className="animate-spin rounded-full h-6 w-6 border-2 border-t-transparent mx-auto" style={{borderColor:"#a66a6a",borderTopColor:"transparent"}}/></div>
               )}
-              {aiText&&(
+              {(aiParsed||aiText)&&(
                 <motion.div initial={{opacity:0,y:8}} animate={{opacity:1,y:0}}
                   className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-4">
                   <h3 className="text-sm font-bold mb-3 serif flex items-center gap-2" style={{color:"#a66a6a"}}>
                     <span className="w-1.5 h-4 rounded-sm" style={{background:"#a66a6a"}}/> 月老详解
                   </h3>
-                  <div className="text-sm text-gray-700 leading-loose whitespace-pre-line">{aiText}</div>
+                  {aiParsed ? (
+                    <div className="text-sm text-gray-700 leading-loose whitespace-pre-line">
+                      {aiParsed.summary}
+                      {aiParsed.relationship&&(<div className="mt-4 pt-4 border-t border-gray-50">{aiParsed.relationship}</div>)}
+                    </div>
+                  ) : (
+                    <div className="text-sm text-gray-700 leading-loose whitespace-pre-line">{aiText}</div>
+                  )}
                 </motion.div>
               )}
               <div className="text-center pb-10">
-                <button onClick={()=>{setShowResult(false);setAiText("")}}
+                <button onClick={()=>{setShowResult(false);setAiText("");setAiParsed(null)}}
                   className="text-xs text-gray-300 hover:text-gray-500">重新测算</button>
               </div>
             </motion.div>
