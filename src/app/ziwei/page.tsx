@@ -141,18 +141,12 @@ export default function ZiWeiPage(){
         scale: 3,
         backgroundColor: "#F5F5F7",
         useCORS: true,
-        onclone: (doc) => {
-          // Strip Tailwind oklch/lab colors that crash html2canvas parser
-          const all = doc.querySelectorAll("*");
-          all.forEach((el: any) => {
-            if (el.style?.color?.includes?.("oklch")) el.style.color = "#1D1D1F";
-            if (el.style?.backgroundColor?.includes?.("oklch")) el.style.backgroundColor = "#F5F5F7";
-            if (el.style?.borderColor?.includes?.("oklch")) el.style.borderColor = "#E5E5EA";
-          });
-        },
       });
       setPosterDataUrl(canvas.toDataURL("image/png"));
-    }catch(e){console.error(e)}
+    }catch(e){
+      console.error(e);
+      alert("生成失败，请重试");
+    }
     setGenning(false);
   };
 
