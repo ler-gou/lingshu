@@ -120,7 +120,7 @@ export default function ZiWeiPage(){
   const fetchAIWithOrder = async (chartData:ChartResult)=>{
     setAiLoading(true);
     try{
-      const resp=await fetch("/api/interpret",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({module:"ziwei",stream:true,data:{mainStar:chartData.mainStar,palaces:chartData.palaceStars.map(p=>`${p.name}:${p.main}`),auxStars:chartData.palaceStars[0].aux,dayun:chartData.dayun,geju:chartData.gejuList.map(g=>g.name).join("、"),tcmOrgan:chartData.tcm.zang}})});
+      const resp=await fetch("/api/interpret",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({module:"ziwei",data:{mainStar:chartData.mainStar,palaces:chartData.palaceStars.map(p=>`${p.name}:${p.main}`),auxStars:chartData.palaceStars[0].aux,dayun:chartData.dayun,geju:chartData.gejuList.map(g=>g.name).join("、"),tcmOrgan:chartData.tcm.zang}})});
       const ct=resp.headers.get("content-type")||"";
       if(ct.includes("text/event-stream")){
         const reader=resp.body?.getReader();if(!reader){setAi({summary:"error",career:"",relationship:"",health:""});setState("paid");setAiLoading(false);return}
