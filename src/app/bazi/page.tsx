@@ -44,7 +44,9 @@ export default function BaziPage(){
     setAiLoading(true);setAiText("");
     try{
       const resp=await fetch("/api/interpret",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({module:"bazi",data:result})});
-      const j=await resp.json();if(j.parsed){setAiParsed(j.parsed);setAiText("")}else{setAiText(j.content||j.error||"解读失败");setAiParsed(null)}
+      const j=await resp.json();
+      if(j.parsed){setAiParsed(j.parsed);setAiText("")}
+      else{setAiText(j.content||j.error||"解读失败");setAiParsed(null)}
       setState("paid");
     }catch{setAiText("网络错误");setAiParsed(null)}
     setAiLoading(false);
@@ -143,14 +145,14 @@ export default function BaziPage(){
                   <button type="button" onClick={fetchAI}
                     className="w-full bg-[var(--ink)] text-[var(--gold)] rounded-full py-4 font-bold text-base shadow-lg flex items-center justify-center gap-2 hover:bg-black transition-colors cursor-pointer select-none"
                     style={{ WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
-                    <span>解锁完整命书</span>
+                    <span>解锁 AI 深度命书</span>
                     <span className="text-white ml-1">· 免费</span>
                   </button>
                 )}
                 {aiLoading&&(
                   <div className="py-4 text-center">
                     <div className="animate-spin rounded-full h-8 w-8 border-2 border-t-transparent mx-auto mb-2" style={{borderColor:"var(--gold)",borderTopColor:"transparent"}}/>
-                    <p className="text-xs text-gray-400">命理师正在为你推演命盘…</p>
+                    <p className="text-xs text-gray-400">AI 正在为你撰写命书…</p>
                   </div>
                 )}
                 <p className="text-xs text-gray-300 mt-4">已有 1,286 位行路人在此找到心安</p>
@@ -206,7 +208,7 @@ export default function BaziPage(){
             {(aiParsed||aiText)?(
               <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
                 <h3 className="text-lg font-bold text-[var(--gold)] mb-6 flex items-center gap-2 serif">
-                  <span className="w-1.5 h-1.5 bg-[var(--gold)] rounded-full"/> 命盘解读
+                  <span className="w-1.5 h-1.5 bg-[var(--gold)] rounded-full"/> AI 命书详解
                 </h3>
                 {aiParsed ? (
                   <div className="text-sm text-gray-700 leading-loose space-y-4">
@@ -239,10 +241,10 @@ export default function BaziPage(){
             </div>
 
             <div className="text-center pt-4 space-y-3">
-              <button className="bg-white border border-[var(--gold)] text-[var(--gold)] hover:bg-[var(--gold)] hover:text-white transition-colors rounded-full px-6 py-2.5 text-sm font-semibold tracking-wider shadow-sm w-full">
+              <button type="button" className="bg-white border border-[var(--gold)] text-[var(--gold)] hover:bg-[var(--gold)] hover:text-white transition-colors rounded-full px-6 py-2.5 text-sm font-semibold tracking-wider shadow-sm w-full">
                 生成我的今日留白箴言卡
               </button>
-              <button onClick={()=>{setState("preview");setAiText("");setAiParsed(null)}}
+              <button type="button" onClick={()=>{setState("preview");setAiText("");setAiParsed(null)}}
                 className="text-xs text-gray-300 hover:text-gray-500 transition-colors">
                 重新排盘
               </button>
